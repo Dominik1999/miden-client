@@ -99,12 +99,12 @@ where
     ///
     /// Similar to [`Client::fetch_private_notes`] but ignores the stored
     /// pagination cursor and re-scans from the beginning. The server-side
-    /// transport caps each response at a fixed batch size; this method calls
-    /// [`Client::fetch_transport_notes`] repeatedly until a call returns the
-    /// same cursor it was given (i.e. no new notes), so the documented
-    /// "fetches all notes" semantics hold regardless of how large the backlog
-    /// is. Prefer [`Client::fetch_private_notes`] for steady-state syncing to
-    /// avoid re-downloading already-seen notes.
+    /// transport caps each response at a fixed batch size; this method issues
+    /// repeated fetch calls until one returns the same cursor it was given
+    /// (i.e. no new notes), so the documented "fetches all notes" semantics
+    /// hold regardless of how large the backlog is. Prefer
+    /// [`Client::fetch_private_notes`] for steady-state syncing to avoid
+    /// re-downloading already-seen notes.
     pub async fn fetch_all_private_notes(&mut self) -> Result<(), ClientError> {
         // Safety cap: bounds wall-clock time even if the server lies about its
         // cursor. At 500 notes per batch, 100k iterations = 50M notes, well
