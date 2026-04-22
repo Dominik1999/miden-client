@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+* [FIX][rust] `Client::fetch_all_private_notes` now drains the full backlog across multiple server-paginated responses instead of returning after a single batch. Needed once the note-transport server (`0xMiden/note-transport-service#77`) caps each `fetch_notes` response at `FETCH_NOTES_BATCH_SIZE` rows — previously the function silently returned only the first batch, contradicting its documented "fetches all notes" semantics. Companion deterministic regression test (`fetch_all_private_notes_drains_across_batches`) uses a new `MockNoteTransportNode::with_max_batch(n)` constructor to exercise multi-batch drain.
+
 ## 0.14.4 (2026-04-20)
 
 ### Features
