@@ -126,8 +126,9 @@ where
         // TODO We can run both sync_state, fetch_transport_notes futures in parallel
         if self.is_note_transport_enabled() {
             let cursor = self.store.get_note_transport_cursor().await?;
-            let note_tags = self.store.get_unique_note_tags().await?;
-            self.fetch_transport_notes(cursor, note_tags).await?;
+            let note_tags: Vec<_> = self.store.get_unique_note_tags().await?.into_iter().collect();
+            let new_cursor = self.fetch_transport_notes(cursor, &note_tags).await?;
+            self.store.update_note_transport_cursor(new_cursor).await?;
         }
 
         // Build sync state components
